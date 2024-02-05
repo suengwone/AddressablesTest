@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Objects
+  m_EditorClassIdentifier: 
+  m_GroupName: Objects
+  m_Data:
+    m_SerializedData: []
+  m_GUID: d57a1e3d104b0498e8958551978be819
+  m_SerializeEntries:
+  - m_GUID: 23ab1f47a79bf4f6ca69deedb7b0e1a8
+    m_Address: Assets/Prefabs/Box_1.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Box
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 827884dc7c539422cb9b7fdb68907973
+    m_Address: Assets/Prefabs/Capsule_1.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Capsule
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 119dacd01f5ba479787d49963bc81fb4
+    m_Address: Assets/Prefabs/Sphere_1.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sphere
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 8df6121afebd0449c97bcb4188bdb33a, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 5ecfc7d500df249c49beab92c46c6cd7, type: 2}
+    - {fileID: 11400000, guid: fea91c02effb649ba9e10326134b5e27, type: 2}
