@@ -1,13 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace T_Addressables.Manager
+namespace T_Addressables.Manager.Assets
 {
     // Manage Addressable asset handles
     // TODO :
@@ -15,105 +13,66 @@ namespace T_Addressables.Manager
     // 2. Get Handle's object for key
     // 3. Release Handle for Request
 
-    public class AddressablesHandleManager : MonoBehaviour
+    public class AddressablesHandleManager
     {
-        public AddressablesHandleManager()
-        {
-            handles = new();
-        }
-
-        private class AddressableHandleData
-        {
-            public string label;
-            public string objectName;
-            public List<object> instances;
-            public AsyncOperationHandle handle;
-
-            public bool Release()
-            {
-                try
-                {
-                    foreach(var instance in this.instances)
-                        Addressables.ReleaseInstance(instance as GameObject);
-                        
-                    Addressables.Release(handle);
-                }
-                catch(Exception ex)
-                {
-                    Debug.LogException(ex);
-                    return false;
-                }
-                
-                return true;
-            }
-        }
-
-        private Dictionary<string, AddressableHandleData> handles;
-
-
-
-#region [Private Method]
-        private void SetObjectForKey(string key)
-        {
-            var handle = Addressables.LoadAssetAsync<object>(key);
-
-            handle.Completed += inputHandle => 
-            {
-                var loadedObject = inputHandle.Result;
-                if(handles.ContainsKey(key) == false)
-                {
-                    handles[key] = new AddressableHandleData()
-                    {
-                        label = key,
-                        objectName = nameof(loadedObject).Split('_')[0],
-                        instances = new(),
-                        handle = inputHandle,
-                    };
-                }
-
-                InstantiateWithHandle(handles[key]);
-            };
-        }
-
-        private void InstantiateWithHandle(AddressableHandleData handleData)
-        {
-            var instancingHandle = Addressables.InstantiateAsync(handleData.label);
-
-            instancingHandle.Completed += handle =>
-            {
-                handleData.instances.Add(handle.Result);
-            };
-        }
+#region [ Public Property ]
+        public readonly string Label;
+        public readonly string ObjectName;
+        public readonly Type ObjectType;
+        public readonly AsyncOperationHandle Handle;
+        public List<GameObject> instances;
 #endregion
 
-#region [Public Method]
-        public void GetObjectForKeyAsync(string key)
+#region [ Public Method ]
+        public AddressablesHandleManager(string label, string objectName, Type type, AsyncOperationHandle handle)
         {
-            var isExist = handles.TryGetValue(key, out AddressableHandleData handleData);
+            Label = label;
+            ObjectName = objectName;
+            ObjectType = type;
+            Handle = handle;
+
+            if(ObjectType == typeof(GameObject))
+            {
+                instances = new List<GameObject>();
+            }
+        }
         
-            if(isExist == false)
+        public void Release(bool isReleaseHandle)
+        {
+            if(instances != null && instances.Count > 0)
             {
-                SetObjectForKey(key);
+                foreach(var instance in instances)
+                    Release(instance);
             }
-            else
-            {
-                InstantiateWithHandle(handles[key]);
-            }
+
+            if(isReleaseHandle == true)
+                Addressables.Release(Handle);
         }
 
-        public void GetObjectsForPathAsync(string groupName)
+        public void Release(GameObject targetObject = null)
         {
-            
-        }
-
-        public void ReleaseLoadAsset(string targetObjectName)
-        {
-            if(handles.ContainsKey(targetObjectName) == false)
+            // Check Empty List
+            if(instances.Count == 0)
+            {
+                Debug.Log("Instancing List is Empty");
                 return;
+            }
 
-            handles[targetObjectName].Release();
+            // For Default Option
+            targetObject ??= instances.Last();
 
-            handles.Remove(targetObjectName);
+            // Defend for Unexpected Issue
+            try
+            {
+                if(instances.Remove(targetObject))
+                    Addressables.ReleaseInstance(targetObject);
+                else
+                    Debug.LogWarning($"No Target Object({targetObject} in Instancing List)");
+            }
+            catch(Exception ex)
+            {
+                Debug.LogError(ex);
+            }
         }
 #endregion
     }
