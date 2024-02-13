@@ -12,11 +12,11 @@ namespace T_Addressables.Manager.Assets
     using System.Threading.Tasks;
 #endif
 
-    // Manage Addressable Assets
+    // Manage Assets with Addressables
     // TODO :
-    // Load Addressable asset
-    // Instantiate loaded Addressable asset
-    // Release loaded Addressable asset
+    // 1. Load Addressable asset
+    // 2. Instantiate loaded Addressable asset
+    // 3. Release loaded Addressable asset
 
     public partial class ResourceManager
     {
